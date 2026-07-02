@@ -1,0 +1,22 @@
+numpy==1.26.4
+distrax==0.1.2
+ml_collections >= 0.1.0
+tqdm >= 4.60.0
+chex==0.1.82
+optax==0.1.5
+absl-py >= 0.12.0
+scipy==1.11.2
+wandb >= 0.12.14
+einops >= 0.6.1
+imageio >= 2.31.1
+moviepy >= 1.0.3
+pre-commit == 3.3.3
+overrides
+cython < 3
+patchelf
+orbax-checkpoint == 0.3.5
+flax == 0.7.5
+mujoco==3.1.6
+mujoco-py==2.1.2.14
+gym==0.23.1
+dm_control==1.0.20

@@ -1,8 +1,9 @@
 from typing import Optional
 
-import d4rl
-import gym
-import mj_envs
+#import d4rl
+#import gym
+#import mj_envs
+import gymnasium as gym
 import numpy as np
 from absl import flags
 
@@ -26,13 +27,25 @@ def make_gym_env(
     seed: int = 0,
 ):
     """
-    create a gym environment for antmaze, kitchen, adroit, and locomotion tasks.
+    create a gymnasium environment for antmaze, kitchen, adroit, and locomotion tasks.
+    Supports both legacy D4RL-style env names and modern Gymnasium env names
     """
+    # --- MINARI MAPPING ---
+    # Map Minari dataset IDs to valid Gymnasium environment IDs
+    gym_env_id = env_name
+    if "mujoco/" in env_name or "minari" in env_name:
+        if "hopper" in env_name.lower():
+            gym_env_id = "Hopper-v4"
+        elif "halfcheetah" in env_name.lower():
+            gym_env_id = "HalfCheetah-v4"
+        elif "walker" in env_name.lower():
+            gym_env_id = "Walker2d-v4"
+    # ----------------------
     try:
-        env = gym.make(env_name, seed=seed)
+        env = gym.make(gym_env_id, seed=seed)
     except TypeError:
         # some envs don't take in seed as argument
-        env = gym.make(env_name)
+        env = gym.make(gym_env_id)
 
     # fix the done signal
     if "kitchen" in env_name:
@@ -52,9 +65,12 @@ def make_gym_env(
     if reward_scale is not None and reward_bias is not None:
         env = ScaledRewardWrapper(env, reward_scale, reward_bias)
 
-    env = gym.wrappers.RecordEpisodeStatistics(env, deque_size=1)
-    # 4-tuple to 5-tuple return
-    env = TruncationWrapper(env)
+    env = gym.wrappers.RecordEpisodeStatistics(env)
+    # Gymnasium already returns a 5-tuple from step(); TruncationWrapper is only
+    # needed when wrapping old gym (4-tuple) environments such as Kitchen/Adroit.
+    # For standard Gymnasium locomotion envs we skip it.
+    if "kitchen" in env_name or "binary" in env_name or "antmaze" in env_name:
+        env = TruncationWrapper(env)
 
     return env
 
@@ -74,7 +90,7 @@ def get_env_type(env_name):
         env_type = "antmaze"
     elif "kitchen" in env_name:
         env_type = "kitchen"
-    elif "halfcheetah" in env_name or "hopper" in env_name or "walker" in env_name:
+    elif "halfcheetah" in env_name.lower() or "hopper" in env_name.lower() or "walker" in env_name.lower():
         env_type = "locomotion"
     else:
         raise RuntimeError(f"Unknown environment type for {env_name}")
@@ -85,7 +101,8 @@ def get_env_type(env_name):
 def _determine_whether_sparse_reward(env_name):
     # return True if the environment is sparse-reward
     # determine if the env is sparse-reward or not
-    if "antmaze" in env_name or env_name in [
+    env_name_lower = env_name.lower()
+    if "antmaze" in env_name_lower or env_name in [
         "pen-binary-v0",
         "door-binary-v0",
         "relocate-binary-v0",
@@ -95,10 +112,10 @@ def _determine_whether_sparse_reward(env_name):
     ]:
         is_sparse_reward = True
     elif (
-        "halfcheetah" in env_name
-        or "hopper" in env_name
-        or "walker" in env_name
-        or "kitchen" in env_name
+        "halfcheetah" in env_name_lower
+        or "hopper" in env_name_lower
+        or "walker" in env_name_lower
+        or "kitchen" in env_name_lower
     ):
         is_sparse_reward = False
     else:

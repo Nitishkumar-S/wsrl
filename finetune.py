@@ -1,7 +1,7 @@
 import os
 from functools import partial
 
-import gym
+import gymnasium as gym
 import jax
 import numpy as np
 import tqdm
@@ -18,6 +18,8 @@ from wsrl.envs.adroit_binary_dataset import get_hand_dataset_with_mc_calculation
 from wsrl.envs.d4rl_dataset import (
     get_d4rl_dataset,
     get_d4rl_dataset_with_mc_calculation,
+    get_minari_dataset,
+    get_minari_dataset_with_mc_calculation
 )
 from wsrl.envs.env_common import get_env_type, make_gym_env
 from wsrl.utils.timer_utils import Timer
@@ -42,6 +44,14 @@ flags.DEFINE_float(
     "offline_data_ratio",
     0.0,
     "How much offline data to retain in each online batch update",
+)
+flags.DEFINE_string(
+    "minari_dataset_id",
+    "",
+    """Minari dataset ID to load for offline pre-training.
+    When non-empty and env_type is 'locomotion', this dataset is used
+    instead of the legacy D4RL loader.
+    Leave empty for non-locomotion environments (Kitchen, Antmaze, Adroit).""",
 )
 flags.DEFINE_string(
     "online_sampling_method",
@@ -84,7 +94,8 @@ flags.DEFINE_bool("deterministic_eval", True, "Whether to use deterministic eval
 
 # wandb
 flags.DEFINE_string("exp_name", "", "Experiment name for wandb logging")
-flags.DEFINE_string("project", None, "Wandb project folder")
+flags.DEFINE_string("project", "NR5", "Wandb project folder")
+flags.DEFINE_string("entity", "fryan-nr", "Wandb entity (username or team name)")
 flags.DEFINE_string("group", None, "Wandb group of the experiment")
 flags.DEFINE_bool("debug", False, "If true, no logging to wandb")
 
@@ -94,6 +105,22 @@ config_flags.DEFINE_config_file(
     "File path to the training hyperparameter configuration.",
     lock_config=False,
 )
+
+
+def get_locomotion_normalized_score(env_name: str, raw_score: float):
+    env_name_lower = env_name.lower()
+    if "halfcheetah" in env_name_lower:
+        random_score = -281.05892
+        expert_score = 12135.0
+    elif "hopper" in env_name_lower:
+        random_score = -20.272305
+        expert_score = 3234.3
+    elif "walker" in env_name_lower:
+        random_score = 1.629008
+        expert_score = 4592.3
+    else:
+        return None
+    return 100.0 * (raw_score - random_score) / (expert_score - random_score)
 
 
 def main(_):
@@ -117,12 +144,15 @@ def main(_):
     """
     wandb and logging
     """
+
+    safe_env_name = FLAGS.env.replace("/", "-")
     wandb_config = WandBLogger.get_default_config()
     wandb_config.update(
         {
-            "project": "wsrl" or FLAGS.project,
-            "group": "wsrl" or FLAGS.group,
-            "exp_descriptor": f"{FLAGS.exp_name}_{FLAGS.env}_{FLAGS.agent}_seed{FLAGS.seed}",
+            "project": FLAGS.project or "NR5",
+            "entity": FLAGS.entity,
+            "group": FLAGS.group or "wsrl",
+            "exp_descriptor": f"{FLAGS.exp_name}_{safe_env_name}_{FLAGS.agent}_seed{FLAGS.seed}",
         }
     )
     wandb_logger = WandBLogger(
@@ -170,10 +200,10 @@ def main(_):
             reward_bias=FLAGS.reward_bias,
             clip_action=FLAGS.clip_action,
         )
-    else:
+    # ---  MINARI ---
+    elif "minari" in FLAGS.env or "mujoco/" in FLAGS.env:
         if FLAGS.agent == "calql":
-            # need dataset with mc return
-            dataset = get_d4rl_dataset_with_mc_calculation(
+            dataset = get_minari_dataset_with_mc_calculation(
                 FLAGS.env,
                 reward_scale=FLAGS.reward_scale,
                 reward_bias=FLAGS.reward_bias,
@@ -181,7 +211,24 @@ def main(_):
                 gamma=FLAGS.config.agent_kwargs.discount,
             )
         else:
-            dataset = get_d4rl_dataset(
+            dataset = get_minari_dataset(
+                FLAGS.env,
+                reward_scale=FLAGS.reward_scale,
+                reward_bias=FLAGS.reward_bias,
+                clip_action=FLAGS.clip_action,
+            )
+    else:
+        if FLAGS.agent == "calql":
+            # need dataset with mc return
+            dataset = get_minari_dataset_with_mc_calculation(
+                FLAGS.env,
+                reward_scale=FLAGS.reward_scale,
+                reward_bias=FLAGS.reward_bias,
+                clip_action=FLAGS.clip_action,
+                gamma=FLAGS.config.agent_kwargs.discount,
+            )
+        else:
+            dataset = get_minari_dataset(
                 FLAGS.env,
                 reward_scale=FLAGS.reward_scale,
                 reward_bias=FLAGS.reward_bias,
@@ -249,8 +296,15 @@ def main(_):
             # kitchen
             eval_info["num_stages_solved"] = np.mean([t["rewards"][-1] for t in trajs])
             eval_info["success_rate"] = np.mean([t["rewards"][-1] for t in trajs]) / 4
+        elif env_type == "locomotion":
+            # locomotion: log raw average return and compute normalized return
+            raw_return = np.mean([np.sum(t["rewards"]) for t in trajs])
+            eval_info["average_return"] = raw_return
+            norm_score = get_locomotion_normalized_score(FLAGS.env, raw_return)
+            if norm_score is not None:
+                eval_info["average_normalized_return"] = norm_score
         else:
-            # d4rl antmaze, locomotion
+            # d4rl antmaze
             eval_info["success_rate"] = eval_info[
                 "average_normalized_return"
             ] = np.mean(

@@ -1,4 +1,5 @@
-from gym import Env, RewardWrapper
+import gymnasium as gym
+from gymnasium import Env, RewardWrapper
 
 
 class ScaledRewardWrapper(RewardWrapper):

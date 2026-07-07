@@ -16,7 +16,10 @@ cython < 3
 patchelf
 orbax-checkpoint == 0.3.5
 flax == 0.7.5
-mujoco==3.1.6
-mujoco-py==2.1.2.14
-gym==0.23.1
-dm_control==1.0.20
+mujoco >= 3.1.6
+# Modern Farama stack (replaces legacy gym==0.23.1, d4rl, mj_envs, mujoco-py)
+gymnasium >= 0.29.0
+gymnasium[mujoco]
+minari >= 0.5.0
+huggingface_hub
+h5py

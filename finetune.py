@@ -17,7 +17,10 @@ from wsrl.data.replay_buffer import ReplayBuffer, ReplayBufferMC
 from wsrl.envs.adroit_binary_dataset import get_hand_dataset_with_mc_calculation
 from wsrl.envs.d4rl_dataset import (
     get_d4rl_dataset,
-    get_d4rl_dataset_with_mc_calculation,
+    get_d4rl_dataset_with_mc_calculation
+    
+)
+from wsrl.envs.minari_dataset import (
     get_minari_dataset,
     get_minari_dataset_with_mc_calculation
 )
@@ -45,14 +48,7 @@ flags.DEFINE_float(
     0.0,
     "How much offline data to retain in each online batch update",
 )
-flags.DEFINE_string(
-    "minari_dataset_id",
-    "",
-    """Minari dataset ID to load for offline pre-training.
-    When non-empty and env_type is 'locomotion', this dataset is used
-    instead of the legacy D4RL loader.
-    Leave empty for non-locomotion environments (Kitchen, Antmaze, Adroit).""",
-)
+
 flags.DEFINE_string(
     "online_sampling_method",
     "mixed",
@@ -220,7 +216,7 @@ def main(_):
     else:
         if FLAGS.agent == "calql":
             # need dataset with mc return
-            dataset = get_minari_dataset_with_mc_calculation(
+            dataset = get_d4rl_dataset_with_mc_calculation(
                 FLAGS.env,
                 reward_scale=FLAGS.reward_scale,
                 reward_bias=FLAGS.reward_bias,
@@ -228,7 +224,7 @@ def main(_):
                 gamma=FLAGS.config.agent_kwargs.discount,
             )
         else:
-            dataset = get_minari_dataset(
+            dataset = get_d4rl_dataset(
                 FLAGS.env,
                 reward_scale=FLAGS.reward_scale,
                 reward_bias=FLAGS.reward_bias,

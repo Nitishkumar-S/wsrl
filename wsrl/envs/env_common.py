@@ -32,21 +32,21 @@ def make_gym_env(
     """
     # --- MINARI MAPPING ---
     # Map Minari dataset IDs to valid Gymnasium environment IDs
-    gym_env_id = env_name
+    
     if "mujoco/" in env_name or "minari" in env_name:
-        if "hopper" in env_name.lower():
-            gym_env_id = "Hopper-v4"
-        elif "halfcheetah" in env_name.lower():
-            gym_env_id = "HalfCheetah-v4"
-        elif "walker" in env_name.lower():
-            gym_env_id = "Walker2d-v4"
-    # ----------------------
-    try:
-        env = gym.make(gym_env_id, seed=seed)
-    except TypeError:
-        # some envs don't take in seed as argument
-        env = gym.make(gym_env_id)
-
+        import minari
+        dataset = minari.load_dataset(env_name)
+        # Minari automatically reconstructs the exact Walker2d environment!
+        env = dataset.recover_environment() 
+        # Gymnasium handles seeds in the reset() function
+        env.reset(seed=seed)
+    else:
+        try:
+            env = gym.make(env_name, seed=seed)
+        except TypeError:
+            # some envs don't take in seed as argument
+            env = gym.make(env_name)
+    
     # fix the done signal
     if "kitchen" in env_name:
         env = KitchenTerminalWrapper(env)

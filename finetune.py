@@ -19,7 +19,11 @@ from wsrl.envs.d4rl_dataset import (
     get_d4rl_dataset,
     get_d4rl_dataset_with_mc_calculation,
 )
-from wsrl.envs.env_common import get_env_type, make_gym_env
+from wsrl.envs.minari_dataset import (
+    get_minari_dataset,
+    get_minari_dataset_with_mc_calculation,
+)
+from wsrl.envs.env_common import get_env_type, make_gym_env, get_env_normalized_score
 from wsrl.utils.timer_utils import Timer
 from wsrl.utils.train_utils import concatenate_batches, subsample_batch
 
@@ -110,8 +114,17 @@ def main(_):
 
     min_steps_to_update = FLAGS.batch_size * (1 - FLAGS.offline_data_ratio)
     if FLAGS.agent == "calql":
+        try:
+            # Try old gym API first
+            max_ep_steps = gym.make(FLAGS.env)._max_episode_steps
+        except Exception:
+            # Fallback to gymnasium API
+            import gymnasium
+            temp_env = gymnasium.make(FLAGS.env)
+            max_ep_steps = temp_env.spec.max_episode_steps
+            temp_env.close()
         min_steps_to_update = max(
-            min_steps_to_update, gym.make(FLAGS.env)._max_episode_steps
+            min_steps_to_update, max_ep_steps
         )
 
     """
@@ -120,9 +133,10 @@ def main(_):
     wandb_config = WandBLogger.get_default_config()
     wandb_config.update(
         {
-            "project": "wsrl" or FLAGS.project,
-            "group": "wsrl" or FLAGS.group,
-            "exp_descriptor": f"{FLAGS.exp_name}_{FLAGS.env}_{FLAGS.agent}_seed{FLAGS.seed}",
+            "project": FLAGS.project or "NR5",
+            "group": FLAGS.group or "NR5",
+            "entity": "fryan-nr",
+            "exp_descriptor": f"{FLAGS.exp_name}_{FLAGS.env.replace('/', '-')}_{FLAGS.agent}_seed{FLAGS.seed}",
         }
     )
     wandb_logger = WandBLogger(
@@ -162,7 +176,25 @@ def main(_):
     """
     load dataset
     """
-    if env_type == "adroit-binary":
+    is_minari_env = "walker2d" in FLAGS.env or "minari" in FLAGS.env
+
+    if is_minari_env:
+        if FLAGS.agent == "calql":
+            dataset = get_minari_dataset_with_mc_calculation(
+                FLAGS.env,
+                reward_scale=FLAGS.reward_scale,
+                reward_bias=FLAGS.reward_bias,
+                clip_action=FLAGS.clip_action,
+                gamma=FLAGS.config.agent_kwargs.discount,
+            )
+        else:
+            dataset = get_minari_dataset(
+                FLAGS.env,
+                reward_scale=FLAGS.reward_scale,
+                reward_bias=FLAGS.reward_bias,
+                clip_action=FLAGS.clip_action,
+            )
+    elif env_type == "adroit-binary":
         dataset = get_hand_dataset_with_mc_calculation(
             FLAGS.env,
             gamma=FLAGS.config.agent_kwargs.discount,
@@ -254,7 +286,8 @@ def main(_):
             eval_info["success_rate"] = eval_info[
                 "average_normalized_return"
             ] = np.mean(
-                [eval_env.get_normalized_score(np.sum(t["rewards"])) for t in trajs]
+                 [get_env_normalized_score(eval_env, np.sum(t["rewards"])) for t in trajs]
+                 # [eval_env.get_normalized_score(np.sum(t["rewards"])) for t in trajs]
             )
 
         wandb_logger.log({"evaluation": eval_info}, step=step_number)

@@ -1,21 +1,40 @@
 import os
 from typing import Iterable, Optional, Union
 
-import gym
-import gym.spaces
 import numpy as np
 from absl import flags
 
 from wsrl.data.dataset import Dataset, DatasetDict, _sample
 from wsrl.envs.env_common import calc_return_to_go
 
+# Robust import of gymnasium and gym to support both libraries
+valid_box_types = []
+valid_dict_types = []
+
+try:
+    from gym.spaces import Box as GymBox, Dict as GymDict
+    valid_box_types.append(GymBox)
+    valid_dict_types.append(GymDict)
+except ImportError:
+    pass
+
+try:
+    from gymnasium.spaces import Box as GymnasiumBox, Dict as GymnasiumDict
+    valid_box_types.append(GymnasiumBox)
+    valid_dict_types.append(GymnasiumDict)
+except ImportError:
+    pass
+
+# Convert lists to tuples so isinstance() can use them
+valid_box_types = tuple(valid_box_types)
+valid_dict_types = tuple(valid_dict_types)
 
 def _init_replay_dict(
-    obs_space: gym.Space, capacity: int
+    obs_space, capacity: int
 ) -> Union[np.ndarray, DatasetDict]:
-    if isinstance(obs_space, gym.spaces.Box):
+    if isinstance(obs_space, valid_box_types):
         return np.empty((capacity, *obs_space.shape), dtype=obs_space.dtype)
-    elif isinstance(obs_space, gym.spaces.Dict):
+    elif isinstance(obs_space, valid_dict_types):
         data_dict = {}
         for k, v in obs_space.spaces.items():
             data_dict[k] = _init_replay_dict(v, capacity)
@@ -42,10 +61,10 @@ def _insert_recursively(
 class ReplayBuffer(Dataset):
     def __init__(
         self,
-        observation_space: gym.Space,
-        action_space: gym.Space,
+        observation_space,
+        action_space,
         capacity: int,
-        next_observation_space: Optional[gym.Space] = None,
+        next_observation_space = None,
         seed: Optional[int] = None,
         discount: Optional[float] = None,
     ):
@@ -127,10 +146,10 @@ class ReplayBuffer(Dataset):
 class ReplayBufferMC(ReplayBuffer):
     def __init__(
         self,
-        observation_space: gym.Space,
-        action_space: gym.Space,
+        observation_space,
+        action_space,
         capacity: int,
-        next_observation_space: Optional[gym.Space] = None,
+        next_observation_space = None,
         seed: Optional[int] = None,
         discount: Optional[float] = None,
     ):

@@ -176,3 +176,8 @@ install_jax_on_matrix.sh
 
 # VSCode
 .vscode
+
+# new additions
+.venv/
+job.slurm
+log/

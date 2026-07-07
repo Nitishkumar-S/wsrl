@@ -1,8 +1,14 @@
 from typing import Optional
 
-import d4rl
-import gym
-import mj_envs
+try:
+    import d4rl
+except ImportError:
+    pass
+import gym, gymnasium
+try:
+    import mj_envs
+except ImportError:
+    pass
 import numpy as np
 from absl import flags
 
@@ -26,13 +32,24 @@ def make_gym_env(
     seed: int = 0,
 ):
     """
-    create a gym environment for antmaze, kitchen, adroit, and locomotion tasks.
+    create a gym/gymnasium environment for antmaze, kitchen, adroit, and locomotion tasks.
     """
-    try:
-        env = gym.make(env_name, seed=seed)
-    except TypeError:
-        # some envs don't take in seed as argument
-        env = gym.make(env_name)
+
+    is_minari_env = "walker2d" in env_name or "minari" in env_name
+
+    if is_minari_env:
+        import minari
+        dataset = minari.load_dataset(env_name)
+        # Minari automatically reconstructs the exact Walker2d environment!
+        env = dataset.recover_environment() 
+        # Gymnasium handles seeds in the reset() function
+        env.reset(seed=seed)
+    else:
+        try:
+            env = gym.make(env_name, seed=seed)
+        except TypeError:
+            # some envs don't take in seed as argument
+            env = gym.make(env_name)
 
     # fix the done signal
     if "kitchen" in env_name:
@@ -42,19 +59,30 @@ def make_gym_env(
         env = AdroitTerminalWrapper(env)
 
     if max_episode_steps is not None:
-        env = gym.wrappers.TimeLimit(env, max_episode_steps=max_episode_steps)
+        if is_minari_env:
+            env = gymnasium.wrappers.TimeLimit(env, max_episode_steps=max_episode_steps)
+        else:
+            env = gym.wrappers.TimeLimit(env, max_episode_steps=max_episode_steps)
 
     if scale_and_clip_action:
         # avoid NaNs for dist.log_prob(1.0) for tanh policies
-        env = gym.wrappers.RescaleAction(env, -action_clip_lim, action_clip_lim)
-        env = gym.wrappers.ClipAction(env)
+        if is_minari_env:
+            env = gymnasium.wrappers.RescaleAction(env, -action_clip_lim, action_clip_lim)
+            env = gymnasium.wrappers.ClipAction(env)
+        else:
+            env = gym.wrappers.RescaleAction(env, -action_clip_lim, action_clip_lim)
+            env = gym.wrappers.ClipAction(env)
+
+    # logging unscaled rewards
+    if is_minari_env:
+        env = gymnasium.wrappers.RecordEpisodeStatistics(env)
+    else:
+        env = gym.wrappers.RecordEpisodeStatistics(env, deque_size=1)
+        # 4-tuple to 5-tuple return
+        env = TruncationWrapper(env)
 
     if reward_scale is not None and reward_bias is not None:
         env = ScaledRewardWrapper(env, reward_scale, reward_bias)
-
-    env = gym.wrappers.RecordEpisodeStatistics(env, deque_size=1)
-    # 4-tuple to 5-tuple return
-    env = TruncationWrapper(env)
 
     return env
 
@@ -209,3 +237,31 @@ def calc_return_to_go(
             )
             prev_return = return_to_go[-i - 1]
     return np.array(return_to_go, dtype=np.float32)
+
+def get_env_normalized_score(env, score):
+    # 1. Try to find the method on the environment (unwrapped or otherwise)
+    if hasattr(env.unwrapped, 'get_normalized_score'):
+        return env.unwrapped.get_normalized_score(score)
+    
+    # 2. Fallback: If it's a Minari dataset, it might be on the dataset object itself
+    # If your eval_env has a reference to the dataset, check there
+    if hasattr(env, 'dataset') and hasattr(env.dataset, 'get_normalized_score'):
+        return env.dataset.get_normalized_score(score)
+
+    # Safely extract the environment name as a lowercase string
+    env_name = getattr(env.spec, "id", "").lower() if hasattr(env, "spec") else ""
+        
+    # 3. If no normalization exists, return the raw score or raise a helpful error
+    if "halfcheetah" in env_name:
+        random_score = -281.05892
+        expert_score = 12135.0
+    elif "hopper" in env_name:
+        random_score = -20.272305
+        expert_score = 3234.3
+    elif "walker" in env_name:
+        random_score = 1.629008
+        expert_score = 4592.3
+    else:
+        print("Warning: Normalization method not found, returning raw score.")
+        return score
+    return 100.0 * (score - random_score) / (expert_score - random_score)

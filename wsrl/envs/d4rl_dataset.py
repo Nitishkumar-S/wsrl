@@ -1,7 +1,10 @@
 import collections
 from typing import Optional
 
-import d4rl
+try:
+    import d4rl
+except ImportError:
+    pass
 import gym
 import gym.wrappers
 import numpy as np

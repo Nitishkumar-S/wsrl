@@ -31,8 +31,8 @@ cleanup() {
     echo "Syncing filesystem..."
     sync
 
-    echo "Shutting down VM..."
-    sudo shutdown -h now
+    # echo "Shutting down VM..."
+    # sudo shutdown -h now
 }
 
 trap cleanup EXIT

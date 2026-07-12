@@ -40,7 +40,7 @@ trap cleanup EXIT
 # -------------------------
 # Activate virtual environment
 # -------------------------
-source venv/bin/activate
+source /home/niladrimitra066/venv/bin/activate
 
 # Optional: verify Python
 python --version

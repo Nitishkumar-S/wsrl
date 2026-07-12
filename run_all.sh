@@ -38,10 +38,12 @@ cleanup() {
 trap cleanup EXIT
 
 # -------------------------
-# Activate Conda
+# Activate virtual environment
 # -------------------------
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate wsrl
+source venv/bin/activate
+
+# Optional: verify Python
+python --version
 
 # -------------------------
 # Run experiments

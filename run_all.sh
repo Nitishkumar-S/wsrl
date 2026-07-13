@@ -54,7 +54,7 @@ bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
     --exp_name NR5 \
     --env mujoco/halfcheetah/medium-v0 \
     --project NR5 \
-    --seed 0 \
+    --seed 1 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
     --batch_size 256
@@ -64,7 +64,7 @@ bash experiments/scripts/locomotion/launch_iql_finetune.sh \
     --exp_name NR5 \
     --env mujoco/halfcheetah/medium-v0 \
     --project NR5 \
-    --seed 0 \
+    --seed 1 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
     --use_redq
@@ -74,7 +74,37 @@ bash experiments/scripts/locomotion/launch_cql_finetune.sh \
     --exp_name NR5 \
     --env mujoco/halfcheetah/medium-v0 \
     --project NR5 \
-    --seed 0 \
+    --seed 1 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
+    --use_redq
+
+# 1. WSRL
+bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/medium-v0 \
+    --project NR5 \
+    --seed 2 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
+    --batch_size 256
+
+# 2. IQL
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/medium-v0 \
+    --project NR5 \
+    --seed 2 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
+    --use_redq
+
+# 3. CQL
+bash experiments/scripts/locomotion/launch_cql_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/medium-v0 \
+    --project NR5 \
+    --seed 2 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
     --use_redq

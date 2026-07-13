@@ -56,7 +56,7 @@ bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
     --project NR5 \
     --seed 0 \
     --save_interval 250000 \
-    --save_dir ./checkpoints/wsrl \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
     --batch_size 256
 
 # 2. IQL
@@ -66,7 +66,7 @@ bash experiments/scripts/locomotion/launch_iql_finetune.sh \
     --project NR5 \
     --seed 0 \
     --save_interval 250000 \
-    --save_dir ./checkpoints/iql \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
     --use_redq
 
 # 3. CQL
@@ -76,5 +76,5 @@ bash experiments/scripts/locomotion/launch_cql_finetune.sh \
     --project NR5 \
     --seed 0 \
     --save_interval 250000 \
-    --save_dir ./checkpoints/cql \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
     --use_redq

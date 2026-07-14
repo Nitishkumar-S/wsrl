@@ -48,13 +48,22 @@ python --version
 # -------------------------
 # Run experiments
 # -------------------------
+# halfcheetah/expert-v0, 300k online steps, seeds 0/1/2.
+# IQL and CQL now get --utd 4 explicitly: launch_iql_finetune.sh /
+# launch_cql_finetune.sh never set --utd, so without this they silently
+# fall back to finetune.py's default of 1, while WSRL (and the paper's
+# baselines) run at UTD=4. --use_redq alone only adds the 10-Q ensemble
+# + layer norm, it does not set UTD.
+
+# --- seed 0 ---
 
 # 1. WSRL
 bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 1 \
+    --seed 0 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
     --batch_size 256
@@ -62,29 +71,36 @@ bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
 # 2. IQL
 bash experiments/scripts/locomotion/launch_iql_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 1 \
+    --seed 0 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
-    --use_redq
+    --use_redq \
+    --utd 4
 
 # 3. CQL
 bash experiments/scripts/locomotion/launch_cql_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 1 \
+    --seed 0 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
-    --use_redq
+    --use_redq \
+    --utd 4
+
+# --- seed 1 ---
 
 # 1. WSRL
 bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 2 \
+    --seed 1 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
     --batch_size 256
@@ -92,19 +108,60 @@ bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
 # 2. IQL
 bash experiments/scripts/locomotion/launch_iql_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 2 \
+    --seed 1 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
-    --use_redq
+    --use_redq \
+    --utd 4
 
 # 3. CQL
 bash experiments/scripts/locomotion/launch_cql_finetune.sh \
     --exp_name NR5 \
-    --env mujoco/halfcheetah/medium-v0 \
+    --env mujoco/halfcheetah/expert-v0 \
     --project NR5 \
-    --seed 2 \
+    --seed 1 \
+    --num_online_steps 300000 \
     --save_interval 250000 \
     --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
-    --use_redq
+    --use_redq \
+    --utd 4
+
+# --- seed 2 ---
+
+# 1. WSRL
+bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/expert-v0 \
+    --project NR5 \
+    --seed 2 \
+    --num_online_steps 300000 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/wsrl \
+    --batch_size 256
+
+# 2. IQL
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/expert-v0 \
+    --project NR5 \
+    --seed 2 \
+    --num_online_steps 300000 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/iql \
+    --use_redq \
+    --utd 4
+
+# 3. CQL
+bash experiments/scripts/locomotion/launch_cql_finetune.sh \
+    --exp_name NR5 \
+    --env mujoco/halfcheetah/expert-v0 \
+    --project NR5 \
+    --seed 2 \
+    --num_online_steps 300000 \
+    --save_interval 250000 \
+    --save_dir /home/niladrimitra066/wsrl/checkpoints/cql \
+    --use_redq \
+    --utd 4

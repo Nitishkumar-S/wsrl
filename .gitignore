@@ -176,3 +176,11 @@ install_jax_on_matrix.sh
 
 # VSCode
 .vscode
+.graphifyignore
+graphify-out
+
+CLAUDE.md
+.claude
+
+Copy of offline_to_online_rl_project_intro.pptx.md
+Efficient Online Reinforcement Learning.md

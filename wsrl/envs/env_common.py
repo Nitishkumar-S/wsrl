@@ -1,8 +1,8 @@
 from typing import Optional
 
+#import d4rl
+#import gym
 #import mj_envs
-import gym as legacy_gym  # D4RL / mj_envs register envs into classic gym's
-                           # registry (via `import d4rl`), not gymnasium's.
 import gymnasium as gym
 import numpy as np
 from absl import flags
@@ -37,33 +37,22 @@ def make_gym_env(
         import minari
         dataset = minari.load_dataset(env_name, download=True)
         # Minari automatically reconstructs the exact Walker2d environment!
-        env = dataset.recover_environment()
+        env = dataset.recover_environment() 
         # Gymnasium handles seeds in the reset() function
         env.reset(seed=seed)
     else:
-        # D4RL-style env names (e.g. halfcheetah-expert-v2, antmaze-*, kitchen-*,
-        # *-binary-v0) are only registered in the classic `gym` package's
-        # registry (a side effect of `import d4rl` / `import mj_envs`), so this
-        # must use legacy_gym, not gymnasium, to find them.
         try:
-            env = legacy_gym.make(env_name, seed=seed)
+            env = gym.make(env_name, seed=seed)
         except TypeError:
             # some envs don't take in seed as argument
-            env = legacy_gym.make(env_name)
-
-        # fix the done signal -- must wrap the raw env here, while it's still
-        # using classic gym's 4-tuple step() API, per these wrappers' own
-        # docstrings ("should be wrapped right after environment creation and
-        # before the Truncation wrapper").
-        if "kitchen" in env_name:
-            env = KitchenTerminalWrapper(env)
-        if "binary" in env_name:
-            # adroit
-            env = AdroitTerminalWrapper(env)
-
-        # bridge classic gym's 4-tuple step()/reset() to gymnasium's 5-tuple
-        # API before any gymnasium-native wrapper below touches this env.
-        env = TruncationWrapper(env)
+            env = gym.make(env_name)
+    
+    # fix the done signal
+    if "kitchen" in env_name:
+        env = KitchenTerminalWrapper(env)
+    if "binary" in env_name:
+        # adroit
+        env = AdroitTerminalWrapper(env)
 
     if max_episode_steps is not None:
         env = gym.wrappers.TimeLimit(env, max_episode_steps=max_episode_steps)
@@ -77,6 +66,11 @@ def make_gym_env(
         env = ScaledRewardWrapper(env, reward_scale, reward_bias)
 
     env = gym.wrappers.RecordEpisodeStatistics(env)
+    # Gymnasium already returns a 5-tuple from step(); TruncationWrapper is only
+    # needed when wrapping old gym (4-tuple) environments such as Kitchen/Adroit.
+    # For standard Gymnasium locomotion envs we skip it.
+    if "kitchen" in env_name or "binary" in env_name or "antmaze" in env_name:
+        env = TruncationWrapper(env)
 
     return env
 

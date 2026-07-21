@@ -254,10 +254,15 @@ def get_config(config_string):
             )
         ),
 
+        # WSRL on locomotion runs the `cql` agent, not `sac`, so this is the CQL
+        # config plus WSRL's REDQ ensemble + layer norm (what get_wsrl_config adds
+        # on top of sac_config). The other *_wsrl configs are still SAC-based.
         "locomotion_wsrl": ConfigDict(
             dict(
-                agent_kwargs=get_wsrl_config(
+                agent_kwargs=get_cql_config(
                     updates=dict(
+                        critic_ensemble_size=10,
+                        critic_subsample_size=2,
                         critic_network_kwargs={
                             "hidden_dims": [256, 256],
                             "activations": "relu",
@@ -270,6 +275,8 @@ def get_config(config_string):
                             "kernel_scale_final": 1e-2,
                             "use_layer_norm": True,
                         },
+                        online_cql_alpha=5.0,
+                        cql_alpha=5.0,
                     )
                 ).to_dict(),
             )

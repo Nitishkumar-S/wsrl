@@ -67,6 +67,13 @@ flags.DEFINE_integer(
 
 # agent
 flags.DEFINE_string("agent", "calql", "what RL agent to use")
+flags.DEFINE_string(
+    "algo_name",
+    "",
+    """Label to use in the wandb run name and save dir in place of --agent.
+    Needed when a method is built on top of a generic agent, e.g. WSRL runs the
+    `cql` agent but should still be logged as `wsrl`. Defaults to --agent.""",
+)
 flags.DEFINE_integer("utd", 1, "update-to-data ratio of the critic")
 flags.DEFINE_integer("batch_size", 256, "batch size for training")
 flags.DEFINE_integer("replay_buffer_capacity", int(2e6), "Replay buffer capacity")
@@ -142,13 +149,14 @@ def main(_):
     """
 
     safe_env_name = FLAGS.env.replace("/", "-")
+    algo_label = FLAGS.algo_name or FLAGS.agent
     wandb_config = WandBLogger.get_default_config()
     wandb_config.update(
         {
             "project": FLAGS.project or "NR5",
             "entity": FLAGS.entity,
             "group": FLAGS.group or "wsrl",
-            "exp_descriptor": f"{FLAGS.exp_name}_{safe_env_name}_{FLAGS.agent}_seed{FLAGS.seed}",
+            "exp_descriptor": f"{FLAGS.exp_name}_{safe_env_name}_{algo_label}_seed{FLAGS.seed}",
         }
     )
     wandb_logger = WandBLogger(

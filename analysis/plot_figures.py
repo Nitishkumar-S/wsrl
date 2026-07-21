@@ -1,6 +1,6 @@
 """
 Builds paper-compatible Figure 17 / Figure 9 style plots and a final
-return table for halfcheetah-medium (WSRL vs IQL vs CQL, no-retention
+return table for Hopper-medium (WSRL vs IQL vs CQL, no-retention
 and retention variants) from per-run wandb history exports.
 
 Expected input (one file per run) in analysis/data/, named:
@@ -44,17 +44,17 @@ RETURN_COL = "evaluation/average_return"
 NORM_RETURN_COL = "evaluation/average_normalized_return"
 
 # Approximate final normalized scores (0-100 scale) hand-read off the WSRL
-# paper's Figure 17, halfcheetah-medium-replay-v2 panel, at its 300k-step
+# paper's Figure 17, Hopper-medium-replay-v2 panel, at its 300k-step
 # budget (Zhou et al. 2025, "Efficient Online RL Fine-Tuning Need Not
-# Retain Offline Data"). The paper does not test halfcheetah-medium-v0 at
+# Retain Offline Data"). The paper does not test Hopper-medium-v0 at
 # all (only random/expert/medium-replay), so medium-replay is the closest
 # available reference, not a matched dataset -- treat these as ballpark
 # figures for the presentation, not ground truth.
 PAPER_REFERENCE = {
-    "dataset": "halfcheetah-medium-replay-v2",
+    "dataset": "Hopper-medium-replay-v2",
     "dataset_caveat": (
         "closest available panel in the paper's Figure 17 -- the paper does not "
-        "test halfcheetah-medium-v0 at all, only random/expert/medium-replay"
+        "test Hopper-medium-v0 at all, only random/expert/medium-replay"
     ),
     "step_budget": 300_000,
     "values": {"wsrl": 79.0, "cql": 50.0, "iql": 37.0},
@@ -189,7 +189,7 @@ def build_paper_comparison(runs):
     table.to_csv(OUT_DIR / "paper_comparison.csv", index=False)
     print(f"saved {OUT_DIR / 'paper_comparison.csv'}")
     print()
-    print(f"Ours (halfcheetah-medium-v0, {our_max_step:.0f} online steps) vs "
+    print(f"Ours (Hopper-medium-v0, {our_max_step:.0f} online steps) vs "
           f"paper (Figure 17, {PAPER_REFERENCE['dataset']}, {PAPER_REFERENCE['step_budget']} online steps):")
     print(f"Caveat: {PAPER_REFERENCE['dataset_caveat']}.")
     print(table.to_string(index=False))
@@ -204,24 +204,24 @@ def main():
     # Figure 17 style: no-retention comparison, normalized return.
     plot_group(
         runs, algos=["wsrl", "iql", "cql"],
-        title="Halfcheetah-mediumv0: WSRL vs IQL vs CQL (no retention)",
-        outfile="fig17_halfcheetah_mediumv0.png",
+        title="Hopper-Medium-v0: WSRL vs IQL vs CQL (no retention)",
+        outfile="fig17_Hopper_mediumv0.png",
         value_index=2, ylabel="Normalized Score",
     )
 
     # Same comparison in raw-return units.
     plot_group(
         runs, algos=["wsrl", "iql", "cql"],
-        title="Halfcheetah-mediumv0: WSRL vs IQL vs CQL (no retention, raw)",
-        outfile="fig17_halfcheetah_mediumv0_raw.png",
+        title="Hopper-Medium-v0: WSRL vs IQL vs CQL (no retention)",
+        outfile="fig17_Hopper_mediumv0_raw.png",
         value_index=1, ylabel="Average Return",
     )
 
     # Figure 9 style: WSRL (no retention) vs IQL/CQL retaining offline data.
     plot_group(
         runs, algos=["wsrl", "iql_retain", "cql_retain"],
-        title="Halfcheetah-mediumv0: WSRL vs IQL/CQL (retains offline data)",
-        outfile="fig9_halfcheetah_mediumv0.png",
+        title="Hopper-mediumv0: WSRL vs IQL/CQL (retains offline data)",
+        outfile="fig9_Hopper_mediumv0.png",
         value_index=2, ylabel="Normalized Score",
     )
 

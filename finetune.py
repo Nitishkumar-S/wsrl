@@ -122,13 +122,11 @@ def get_locomotion_normalized_score(env_name: str, raw_score: float):
         random_score = 1.629008
         expert_score = 4592.3
     elif "humanoid" in env_name_lower:
-        # PROVISIONAL -- replace with measured values before reporting results.
-        # Unlike the three above (D4RL reference scores) there is no published
-        # pair for Humanoid-v5 / Minari, so these are estimates. Measure once on
-        # the cluster with analysis/measure_humanoid_scores.py and paste the
-        # printed numbers here.
-        random_score = 120.0
-        expert_score = 5600.0
+        # Measured with analysis/measure_humanoid_scores.py (no published
+        # Humanoid-v5 / Minari reference pair exists): random policy over 20
+        # episodes, expert = mean return of mujoco/humanoid/expert-v0 (1197 eps).
+        random_score = 105.712692
+        expert_score = 8602.9
     else:
         return None
     return 100.0 * (raw_score - random_score) / (expert_score - random_score)

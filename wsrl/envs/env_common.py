@@ -90,7 +90,12 @@ def get_env_type(env_name):
         env_type = "antmaze"
     elif "kitchen" in env_name:
         env_type = "kitchen"
-    elif "halfcheetah" in env_name.lower() or "hopper" in env_name.lower() or "walker" in env_name.lower():
+    elif (
+        "halfcheetah" in env_name.lower()
+        or "hopper" in env_name.lower()
+        or "walker" in env_name.lower()
+        or "humanoid" in env_name.lower()
+    ):
         env_type = "locomotion"
     else:
         raise RuntimeError(f"Unknown environment type for {env_name}")

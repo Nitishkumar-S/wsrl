@@ -8,6 +8,36 @@ from wsrl.envs.env_common import calc_return_to_go
 from wsrl.utils.train_utils import concatenate_batches
 
 
+def _rescale_actions_to_agent_space(actions, action_space):
+    """
+    Map raw environment actions into the space the agent actually acts in.
+
+    make_gym_env() wraps locomotion envs in RescaleAction(env, -clip, +clip),
+    so online the agent emits actions in ~[-1, 1] which the wrapper maps onto
+    the environment's true range. Minari stores the *raw* environment actions,
+    so without this the offline data and the online rollouts live on different
+    scales.
+
+    This is invisible on halfcheetah/hopper/walker, whose action spaces are
+    already Box(-1, 1) -- they hit the early return below and are unchanged.
+    It matters for Humanoid-v5, which is Box(-0.4, 0.4): a policy trained on
+    raw offline actions would have its outputs shrunk 2.5x the moment online
+    fine-tuning starts.
+
+    (RescaleAction is given +-clip_action = +-0.99999 rather than exactly +-1;
+    the 1e-5 difference is ignored here.)
+    """
+    low = np.asarray(action_space.low, dtype=np.float32)
+    high = np.asarray(action_space.high, dtype=np.float32)
+
+    if np.allclose(low, -1.0) and np.allclose(high, 1.0):
+        return actions  # already in the agent's space
+    if not (np.all(np.isfinite(low)) and np.all(np.isfinite(high))):
+        return actions  # unbounded action space, nothing to rescale against
+
+    return (2.0 * (actions - low) / (high - low) - 1.0).astype(np.float32)
+
+
 def get_minari_dataset(
     dataset_id: str,
     reward_scale: float = 1.0,
@@ -70,6 +100,8 @@ def get_minari_dataset(
     masks = np.concatenate(mask_list, axis=0)
     dones = np.concatenate(done_list, axis=0)
 
+    actions = _rescale_actions_to_agent_space(actions, dataset.action_space)
+
     if clip_action is not None:
         actions = np.clip(actions, -clip_action, clip_action)
 
@@ -114,7 +146,10 @@ def get_minari_dataset_with_mc_calculation(
         # Apply reward scale and bias
         ep_rewards = ep_rewards * reward_scale + reward_bias
 
-        # Apply action clipping if specified
+        # Match the online action scale, then clip (see get_minari_dataset)
+        ep_actions = _rescale_actions_to_agent_space(
+            ep_actions, dataset.action_space
+        )
         if clip_action is not None:
             ep_actions = np.clip(ep_actions, -clip_action, clip_action)
 

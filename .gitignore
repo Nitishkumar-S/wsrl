@@ -185,3 +185,6 @@ CLAUDE.md
 Copy of offline_to_online_rl_project_intro.pptx.md
 Efficient Online Reinforcement Learning.md
 Presentation 15_07.pptx
+
+run_humanoid.sh
+run_ablation_warmup.sh

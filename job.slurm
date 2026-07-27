@@ -110,7 +110,6 @@ bash experiments/scripts/locomotion/launch_iql_finetune.sh \
   --project NR5 \
   --env mujoco/humanoid/medium-v0 \
   --seed 0 \
-  --algo_name iql \
   --use_redq \
   --utd 4 \
   --num_offline_steps 250000 \
@@ -120,11 +119,10 @@ bash experiments/scripts/locomotion/launch_iql_finetune.sh \
 
 
 bash experiments/scripts/locomotion/launch_iql_finetune.sh \
-  --exp_name NR5-humanoid-iql-seed-0 \
+  --exp_name NR5-humanoid-iql-seed-1 \
   --project NR5 \
   --env mujoco/humanoid/medium-v0 \
-  --seed 0 \
-  --algo_name iql \
+  --seed 1 \
   --use_redq \
   --utd 4 \
   --num_offline_steps 250000 \
@@ -133,11 +131,10 @@ bash experiments/scripts/locomotion/launch_iql_finetune.sh \
   --save_dir ./checkpoints/humanoid/iql
 
 bash experiments/scripts/locomotion/launch_iql_finetune.sh \
-  --exp_name NR5-humanoid-iql-seed-0 \
+  --exp_name NR5-humanoid-iql-seed-2 \
   --project NR5 \
   --env mujoco/humanoid/medium-v0 \
-  --seed 0 \
-  --algo_name iql \
+  --seed 2 \
   --use_redq \
   --utd 4 \
   --num_offline_steps 250000 \

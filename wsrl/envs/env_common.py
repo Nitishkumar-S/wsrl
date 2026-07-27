@@ -35,7 +35,7 @@ def make_gym_env(
     
     if "mujoco/" in env_name or "minari" in env_name:
         import minari
-        dataset = minari.load_dataset(env_name)
+        dataset = minari.load_dataset(env_name, download=True)
         # Minari automatically reconstructs the exact Walker2d environment!
         env = dataset.recover_environment() 
         # Gymnasium handles seeds in the reset() function

@@ -24,7 +24,8 @@ if [ ! -d ".venv1" ]; then
   source .venv1/bin/activate
   pip install --upgrade pip
   pip install -r requirements.txt
-  pip install --upgrade "jax[cuda11_pip]==0.4.23" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+  pip uninstall -y jax jaxlib nvidia-cudnn-cu12 nvidia-cublas-cu12
+  pip install "jax[cuda12_pip]==0.4.23" "nvidia-cudnn-cu12<9.0" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 else
   source .venv1/bin/activate
 fi

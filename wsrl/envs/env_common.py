@@ -90,7 +90,7 @@ def get_env_type(env_name):
         env_type = "antmaze"
     elif "kitchen" in env_name:
         env_type = "kitchen"
-    elif "halfcheetah" in env_name.lower() or "hopper" in env_name.lower() or "walker" in env_name.lower():
+    elif "halfcheetah" in env_name.lower() or "hopper" in env_name.lower() or "walker" in env_name.lower() or "humanoid" in env_name.lower():
         env_type = "locomotion"
     else:
         raise RuntimeError(f"Unknown environment type for {env_name}")
@@ -116,6 +116,7 @@ def _determine_whether_sparse_reward(env_name):
         or "hopper" in env_name_lower
         or "walker" in env_name_lower
         or "kitchen" in env_name_lower
+        or "humanoid" in env_name_lower
     ):
         is_sparse_reward = False
     else:

@@ -77,32 +77,73 @@ python -c "import jax; print(jax.default_backend()); print(jax.devices())"
 #     --utd 4
 
 
-bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-    --exp_name NR5-wsrl-finetune-hopper-seed-0 \
-    --env mujoco/hopper/medium-v0 \
-    --agent sac \
-    --seed 0 \
-    --num_offline_steps 250000 \
-    --num_online_steps 500000 \
-    --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-0_mujoco-hopper-medium-v0_cql_seed0_20260726_182037_rnd671912
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-wsrl-finetune-hopper-seed-0 \
+#     --env mujoco/hopper/medium-v0 \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-0_mujoco-hopper-medium-v0_cql_seed0_20260726_182037_rnd671912
 
-bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-    --exp_name NR5-wsrl-finetune-hopper-seed-1 \
-    --env mujoco/hopper/medium-v0 \
-    --agent sac \
-    --seed 1 \
-    --num_offline_steps 250000 \
-    --num_online_steps 500000 \
-    --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-1_mujoco-hopper-medium-v0_cql_seed1_20260726_190954_rnd230691
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-wsrl-finetune-hopper-seed-1 \
+#     --env mujoco/hopper/medium-v0 \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-1_mujoco-hopper-medium-v0_cql_seed1_20260726_190954_rnd230691
 
-bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-    --exp_name NR5-wsrl-finetune-hopper-seed-2 \
-    --env mujoco/hopper/medium-v0 \
-    --agent sac \
-    --seed 2 \
-    --num_offline_steps 250000 \
-    --num_online_steps 500000 \
-    --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-2_mujoco-hopper-medium-v0_cql_seed2_20260726_195914_rnd332012
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-wsrl-finetune-hopper-seed-2 \
+#     --env mujoco/hopper/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-2_mujoco-hopper-medium-v0_cql_seed2_20260726_195914_rnd332012
+
+
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+  --exp_name NR5-humanoid-iql-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --seed 0 \
+  --algo_name iql \
+  --use_redq \
+  --utd 4 \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/iql
+
+
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+  --exp_name NR5-humanoid-iql-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --seed 0 \
+  --algo_name iql \
+  --use_redq \
+  --utd 4 \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/iql
+
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+  --exp_name NR5-humanoid-iql-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --seed 0 \
+  --algo_name iql \
+  --use_redq \
+  --utd 4 \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/iql
 
 
 

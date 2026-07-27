@@ -114,6 +114,12 @@ def get_locomotion_normalized_score(env_name: str, raw_score: float):
     elif "walker" in env_name_lower:
         random_score = 1.629008
         expert_score = 4592.3
+    elif "humanoid" in env_name_lower:
+        # Measured with analysis/measure_humanoid_scores.py (no published
+        # Humanoid-v5 / Minari reference pair exists): random policy over 20
+        # episodes, expert = mean return of mujoco/humanoid/expert-v0 (1197 eps).
+        random_score = 105.712692
+        expert_score = 8602.9
     else:
         return None
     return 100.0 * (raw_score - random_score) / (expert_score - random_score)

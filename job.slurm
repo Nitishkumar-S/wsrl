@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p ml_gpu-rtx2080
 #SBATCH --gres=gpu:1
-# #SBATCH --nodelist=dlcgpu02,dlcgpu04,dlcgpu14
+#SBATCH --nodelist=mlgpu15
 # #SBATCH --mem 4000 # memory pool for each core (4GB)
 # #SBATCH --mem-per-cpu 4000 # memory pool for each core (4GB)
 #SBATCH -t 1-00:00 # time (D-HH:MM)
@@ -335,6 +335,71 @@ python -c "import jax; print(jax.default_backend()); print(jax.devices())"
 #   --random_warmup True \
 #   --save_dir ./checkpoints/humanoid/wsrl \
 #   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+# Ablation Different Pretrain Agents
+
+#IQL Pretraining
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-pretraining-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent iql \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 1 \
+#     --save_dir ./checkpoints/humanoid/wsrl 
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-pretraining-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent iql \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 1 \
+#     --save_dir ./checkpoints/humanoid/wsrl 
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-pretraining-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent iql \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 1 \
+#     --save_dir ./checkpoints/humanoid/wsrl 
+
+#CalQL Pretraining
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent calql \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 4 \
+#     --save_dir ./checkpoints/humanoid/wsrl 
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent calql \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 4 \
+#     --save_dir ./checkpoints/humanoid/wsrl 
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent calql \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --utd 4 \
+#     --save_dir ./checkpoints/humanoid/wsrl
 
 
 # deactivate virtual environment

@@ -1,11 +1,12 @@
 from ml_collections import ConfigDict
 
-from experiments.configs import sac_config, cql_config
+from experiments.configs import sac_config, cql_config, iql_config
 
 
 def get_config(updates=None):
     config = sac_config.get_config()
     #config = cql_config.get_config()
+    #config = iql_config.get_config()
 
     config.critic_ensemble_size = 10
     config.critic_subsample_size = 2

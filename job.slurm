@@ -106,43 +106,235 @@ python -c "import jax; print(jax.default_backend()); print(jax.devices())"
 #     --resume_path ./checkpoints/wsrl/NR5/NR5-wsrl-cql-pretrain-hopper-seed-2_mujoco-hopper-medium-v0_cql_seed2_20260726_195914_rnd332012
 
 
-bash experiments/scripts/locomotion/launch_iql_finetune.sh \
-  --exp_name NR5-humanoid-iql-seed-0 \
-  --project NR5 \
-  --env mujoco/humanoid/medium-v0 \
-  --seed 0 \
-  --use_redq \
-  --utd 4 \
-  --num_offline_steps 250000 \
-  --num_online_steps 500000 \
-  --save_interval 250000 \
-  --save_dir ./checkpoints/humanoid/iql
+# bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+#   --exp_name NR5-humanoid-iql-seed-0 \
+#   --project NR5 \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --use_redq \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/iql
 
 
-bash experiments/scripts/locomotion/launch_iql_finetune.sh \
-  --exp_name NR5-humanoid-iql-seed-1 \
-  --project NR5 \
-  --env mujoco/humanoid/medium-v0 \
-  --seed 1 \
-  --use_redq \
-  --utd 4 \
-  --num_offline_steps 250000 \
-  --num_online_steps 500000 \
-  --save_interval 250000 \
-  --save_dir ./checkpoints/humanoid/iql
+# bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+#   --exp_name NR5-humanoid-iql-seed-1 \
+#   --project NR5 \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --use_redq \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/iql
 
-bash experiments/scripts/locomotion/launch_iql_finetune.sh \
-  --exp_name NR5-humanoid-iql-seed-2 \
-  --project NR5 \
-  --env mujoco/humanoid/medium-v0 \
-  --seed 2 \
-  --use_redq \
-  --utd 4 \
-  --num_offline_steps 250000 \
-  --num_online_steps 500000 \
-  --save_interval 250000 \
-  --save_dir ./checkpoints/humanoid/iql
+# bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+#   --exp_name NR5-humanoid-iql-seed-2 \
+#   --project NR5 \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --use_redq \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/iql
 
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-pretrain-seed-0 \
+#   --project NR5 \
+#   --agent cql \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 0 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-pretrain-seed-1 \
+#   --project NR5 \
+#   --agent cql \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 0 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-pretrain-seed-2 \
+#   --project NR5 \
+#   --agent cql \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 0 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-finetune-seed-0 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-finetune-seed-1 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-finetune-seed-2 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+
+# Ablations Different Warmup Steps
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-1kWarmup-finetune-seed-0 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 1000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-1kWarmup-finetune-seed-1 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 1000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-1kWarmup-finetune-seed-2 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 1000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-20kWarmup-finetune-seed-0 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 20000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-20kWarmup-finetune-seed-1 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 20000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-20kWarmup-finetune-seed-2 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --warmup_steps 20000 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+
+
+# Ablations Random Warmup
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-RandomWarmup-finetune-seed-0 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --random_warmup True \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-RandomWarmup-finetune-seed-1 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --random_warmup True \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-RandomWarmup-finetune-seed-2 \
+#   --project NR5 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --random_warmup True \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
 
 
 # deactivate virtual environment

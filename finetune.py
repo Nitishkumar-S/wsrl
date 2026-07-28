@@ -102,6 +102,11 @@ config_flags.DEFINE_config_file(
     lock_config=False,
 )
 
+flags.DEFINE_bool(
+    "random_warmup",
+    False,
+    "If true, take random actions during the warmup phase of online finetuning.",
+)
 
 def get_locomotion_normalized_score(env_name: str, raw_score: float):
     env_name_lower = env_name.lower()
@@ -358,7 +363,17 @@ def main(_):
         with timer.context("env step"):
             if is_online_stage:
                 rng, action_rng = jax.random.split(rng)
-                action = agent.sample_actions(observation, seed=action_rng)
+                # --- WARMUP ABLATION LOGIC ---
+                actual_online_step = step - FLAGS.num_offline_steps
+                if FLAGS.random_warmup and actual_online_step < FLAGS.warmup_steps:
+                    # Take uniform random actions during the warmup phase
+                    action = finetune_env.action_space.sample()
+                else:
+                    # Take actions using the pre-trained initialized agent
+                    action = agent.sample_actions(observation, seed=action_rng)
+                # -----------------------------
+
+
                 next_observation, reward, done, truncated, info = finetune_env.step(
                     action
                 )

@@ -32,6 +32,8 @@ fi
 
 python -c "import jax; print(jax.default_backend()); print(jax.devices())"
 
+nvidia-smi
+
 # Run your pipeline script
 # bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
 #   --env mujoco/walker2d/medium-v0 \
@@ -369,38 +371,441 @@ python -c "import jax; print(jax.default_backend()); print(jax.devices())"
 #     --utd 1 \
 #     --save_dir ./checkpoints/humanoid/wsrl 
 
-#CalQL Pretraining
+# IQL Finetuning
 
 # bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-0 \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-finetuning-seed-0 \
 #     --env mujoco/humanoid/medium-v0 \
-#     --agent calql \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-ablation-iql-pretraining-seed-0_mujoco-humanoid-medium-v0_iql_seed0_20260728_144249_rnd973546
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-finetuning-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-ablation-iql-pretraining-seed-1_mujoco-humanoid-medium-v0_iql_seed1_20260728_145326_rnd108831
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-iql-finetuning-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-ablation-iql-pretraining-seed-2_mujoco-humanoid-medium-v0_iql_seed2_20260728_145341_rnd478950
+
+# Ablation Different Offline Data Retained
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain25-finetune-seed-0 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.25 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain50-finetune-seed-0 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.50 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain75-finetune-seed-0 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 0 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.75 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain25-finetune-seed-1 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.25 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain50-finetune-seed-1 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.50 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain75-finetune-seed-1 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 1 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.75 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-1_mujoco-humanoid-medium-v0_cql_seed1_20260727_212415_rnd823888
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain25-finetune-seed-2 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.25 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain50-finetune-seed-2 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.50 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#   --exp_name NR5-humanoid-wsrl-ablation-retain75-finetune-seed-2 \
+#   --agent sac \
+#   --env mujoco/humanoid/medium-v0 \
+#   --seed 2 \
+#   --num_offline_steps 250000 \
+#   --num_online_steps 500000 \
+#   --save_interval 250000 \
+#   --offline_data_ratio 0.75 \
+#   --save_dir ./checkpoints/humanoid/wsrl \
+#   --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-2_mujoco-humanoid-medium-v0_cql_seed2_20260727_212427_rnd885403
+
+
+#Ablation Reward manipulation
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-pretraining-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
 #     --seed 0 \
 #     --num_offline_steps 250000 \
 #     --num_online_steps 0 \
-#     --utd 4 \
-#     --save_dir ./checkpoints/humanoid/wsrl 
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
 
 # bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-1 \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-finetuning-seed-0 \
 #     --env mujoco/humanoid/medium-v0 \
-#     --agent calql \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-pretraining-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
 #     --seed 1 \
 #     --num_offline_steps 250000 \
 #     --num_online_steps 0 \
-#     --utd 4 \
-#     --save_dir ./checkpoints/humanoid/wsrl 
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
 
 # bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-#     --exp_name NR5-humanoid-wsrl-ablation-CalQL-pretraining-seed-2 \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-finetuning-seed-1 \
 #     --env mujoco/humanoid/medium-v0 \
-#     --agent calql \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-pretraining-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
 #     --seed 2 \
 #     --num_offline_steps 250000 \
 #     --num_online_steps 0 \
-#     --utd 4 \
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
 #     --save_dir ./checkpoints/humanoid/wsrl
 
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias-5-finetuning-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias -5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+
+# Scale = 0, Bias = 5
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-pretraining-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-pretraining-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-pretraining-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-finetuning-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-finetuning-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale0-bias5-finetuning-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 0.0 \
+#     --reward_bias 5.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+
+# Scale = 5, Bias = -20
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-pretraining-seed0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-pretraining-seed1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-pretraining-seed2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-finetuning-seed0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-finetuning-seed1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale5-bias-20-finetuning-seed2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 5.0 \
+#     --reward_bias -20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+
+
+# Scale = 1, Bias = 20
+
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-pretraining-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-pretraining-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-pretraining-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent cql \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 0 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-finetuning-seed-0 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 0 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-finetuning-seed-1 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 1 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
+
+# bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+#     --exp_name NR5-humanoid-wsrl-ablation-reward-scale1-bias20-finetuning-seed-2 \
+#     --env mujoco/humanoid/medium-v0 \
+#     --agent sac \
+#     --seed 2 \
+#     --num_offline_steps 250000 \
+#     --num_online_steps 500000 \
+#     --reward_scale 1.0 \
+#     --reward_bias 20.0 \
+#     --save_dir ./checkpoints/humanoid/wsrl \
+#     --resume_path given_checkpoint_path
 
 # deactivate virtual environment
 deactivate

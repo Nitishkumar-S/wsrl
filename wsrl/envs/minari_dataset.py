@@ -24,7 +24,7 @@ def get_minari_dataset(
 
     Args:
         dataset_id: Minari dataset identifier, e.g.
-            "mujoco/halfcheetah/medium-replay-v0"
+            "mujoco/humanoid/medium-replay-v0"
         reward_scale: Multiplier applied to each reward.
         reward_bias: Bias added to each reward after scaling.
         clip_action: If set, actions are clipped to [-clip_action, clip_action].

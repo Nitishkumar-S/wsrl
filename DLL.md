@@ -375,3 +375,105 @@ Save the file before launching the experiment.
 
 
 ---
+
+# Humanoid
+
+## IQL Baseline
+
+```
+bash experiments/scripts/locomotion/launch_iql_finetune.sh \
+  --exp_name NR5-humanoid-iql-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --seed 0 \
+  --use_redq \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/iql
+```
+
+**Note:** Replace the values of `--seed` and `--exp_name` appropriately when running experiments with different random seeds (e.g., `0`, `1`, or `2`) to ensure each run is uniquely identified.
+
+
+## CQL Baseline
+
+```
+bash experiments/scripts/locomotion/launch_cql_finetune.sh \
+  --exp_name NR5-humanoid-cql-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --seed 0 \
+  --use_redq \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --utd 4 \
+  --save_dir ./checkpoints/humanoid/cql
+```
+
+**Note:** Replace the values of `--seed` and `--exp_name` appropriately when running experiments with different random seeds (e.g., `0`, `1`, or `2`) to ensure each run is uniquely identified.
+
+## WSRL
+
+### pretraining
+
+```
+bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+  --exp_name NR5-humanoid-cql-pretrain-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --agent cql \
+  --seed 0 \
+  --num_offline_steps 250000 \
+  --num_online_steps 0 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/wsrl
+```
+
+**Note:** Replace the values of `--seed` and `--exp_name` appropriately when running experiments with different random seeds (e.g., `0`, `1`, or `2`) to ensure each run is uniquely identified. 
+
+**Note:** Before running WSRL with a CQL-pretrained policy, edit `experiments/configs/wsrl_config.py` and change the base configuration from SAC to CQL:
+
+```python
+def get_config(updates=None):
+    # config = sac_config.get_config()
+    config = cql_config.get_config()
+    # config = iql_config.get_config()
+```
+
+Save the file before launching the experiment. Similarly, switch to `iql_config.get_config()` when using an IQL-pretrained policy.
+
+### finetuning
+
+```
+bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
+  --exp_name NR5-humanoid-finetune-seed-0 \
+  --project NR5 \
+  --env mujoco/humanoid/medium-v0 \
+  --agent sac \
+  --seed 0 \
+  --num_offline_steps 250000 \
+  --num_online_steps 500000 \
+  --save_interval 250000 \
+  --save_dir ./checkpoints/humanoid/wsrl
+  --resume_path path_to_checkpoint
+```
+
+**Note:** Replace the values of `--seed` and `--exp_name` appropriately when running experiments with different random seeds (e.g., `0`, `1`, or `2`) to ensure each run is uniquely identified. 
+
+**Note:** The `--resume_path` argument should point to the checkpoint generated during the offline pretraining stage.
+
+**Note:** Before finetuning WSRL, edit `experiments/configs/wsrl_config.py` and change the base configuration to SAC:
+
+```python
+def get_config(updates=None):
+    config = sac_config.get_config()
+    # config = cql_config.get_config()
+    # config = iql_config.get_config()
+```
+
+Save the file before launching the experiment.
+
+
+---

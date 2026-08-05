@@ -665,46 +665,6 @@ def get_config(updates=None):
     # config = iql_config.get_config()
 ```
 
----
-
-## Ablation Study: Retaining Offline Data During Fine-tuning
-
-This ablation investigates the effect of retaining a fraction of the offline dataset during the online fine-tuning stage. While the original WSRL algorithm discards the offline dataset after pretraining (`offline_data_ratio = 0`), this study evaluates whether retaining some offline data can improve performance on the challenging **Humanoid** environment, which has a high-dimensional state and action space due to its many degrees of freedom (DoF).
-
-The following offline data retention ratios were evaluated:
-
-- **0.00** (original WSRL; no offline data retained)
-- **0.25**
-- **0.50**
-- **0.75**
-
-Each experiment was run with **three random seeds (0, 1, and 2)**.
-
-### Example Command (25% Offline Data Retained)
-
-```bash
-bash experiments/scripts/locomotion/launch_wsrl_finetune.sh \
-  --exp_name NR5-humanoid-wsrl-ablation-retain25-finetune-seed-0 \
-  --agent sac \
-  --env mujoco/humanoid/medium-v0 \
-  --seed 0 \
-  --num_offline_steps 250000 \
-  --num_online_steps 500000 \
-  --save_interval 250000 \
-  --offline_data_ratio 0.25 \
-  --save_dir ./checkpoints/humanoid/wsrl \
-  --resume_path ./checkpoints/humanoid/wsrl/NR5/NR5-humanoid-wsrl-pretrain-seed-0_mujoco-humanoid-medium-v0_cql_seed0_20260727_212403_rnd656513
-```
-
-> **Note:** Set `--offline_data_ratio` to `0`, `0.25`, `0.5`, or `0.75` to reproduce the different offline data retention ablation experiments.
-
-> **Note:** An `offline_data_ratio` of `0` corresponds to the original WSRL algorithm, where the offline dataset is completely discarded after offline pretraining.
-
-> **Note:** Replace the values of `--seed` and `--exp_name` appropriately when running experiments with different random seeds (`0`, `1`, or `2`).
-
-> **Note:** Update `--resume_path` to point to the corresponding pretrained checkpoint for the selected environment and random seed.
-
-> **Note:** Before launching the experiment, ensure that the base configuration in `experiments/configs/wsrl_config.py` matches the algorithm used to generate the pretrained checkpoint (e.g., SAC, CQL, or IQL).
 
 ---
 

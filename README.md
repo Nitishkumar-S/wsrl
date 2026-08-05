@@ -121,11 +121,9 @@ Environment-specific training configurations:
 experiments/configs/train_config.py
 ```
 
-Complete commands for running experiments on the supported Minari environments are available in:
+## Running Commands
 
-```text
-DLL.md
-```
+Complete commands for reproducing all experiments on the supported Minari environments are available in **[DLL.md](DLL.md)**.
 
 Supported environments:
 
@@ -133,6 +131,28 @@ Supported environments:
 - Walker2d
 - HalfCheetah
 - Humanoid
+
+---
+
+# Contribution Breakdown
+
+| Task | Contributor(s) |
+|------|----------------|
+| Reproduction of Hopper experiments | Kartik |
+| Reproduction of Walker2D experiments | Nitishkumar |
+| Reproduction of HalfCheetah experiments | Niladri |
+| Humanoid extension (IQL experiments) | Nitishkumar |
+| Humanoid extension (CQL experiments) | Niladri |
+| Humanoid extension (WSRL experiments) | Kartik |
+| Ablation 3.1 (Warmup Steps) | Niladri |
+| Ablation 3.2 (Warmup Buffer Initialization) | Kartik |
+| Ablation 3.3 (Value Initialization) | Kartik |
+| Ablation 3.4 (Offline Data Retention) | Kartik |
+| Ablation 3.5 (Reward Configuration) | Nitishkumar |
+| Repository organization and code cleanup | Kartik |
+| Presentation slides | Kartik, Niladri, Nitishkumar |
+| Report writing | Nitishkumar, Kartik |
+| Poster preparation | Niladri, Kartik |
 
 ---
 

@@ -1,10 +1,6 @@
 # WSRL: Warm-Start Reinforcement Learning
 
 <p align="center">
-  <img src="https://zhouzypaul.github.io/images/paper-images/wsrl/wsrl.png" alt="WSRL" width="700"/>
-</p>
-
-<p align="center">
   <a href="http://arxiv.org/abs/2412.07762">
     <img src="https://img.shields.io/badge/arXiv-2412.07762-df2a2a.svg?style=for-the-badge" alt="arXiv">
   </a>

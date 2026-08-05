@@ -16,7 +16,18 @@ cython < 3
 patchelf
 orbax-checkpoint == 0.3.5
 flax == 0.7.5
-mujoco==3.1.6
+mujoco>=3.1.6   # updated this from 3.1.6
 mujoco-py==2.1.2.14
 gym==0.23.1
 dm_control==1.0.20
+
+# for minari support
+gymnasium>=0.28.1
+minari>=0.4.1
+h5py
+huggingface_hub
+
+# pinning jax to lower version because of Flax above
+jax==0.4.23
+jaxlib==0.4.23
+# pip install --upgrade "jax[cuda11_pip]==0.4.23" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html

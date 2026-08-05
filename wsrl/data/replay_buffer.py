@@ -1,8 +1,8 @@
 import os
 from typing import Iterable, Optional, Union
 
-import gym
-import gym.spaces
+import gymnasium as gym
+import gymnasium.spaces
 import numpy as np
 from absl import flags
 
@@ -13,9 +13,9 @@ from wsrl.envs.env_common import calc_return_to_go
 def _init_replay_dict(
     obs_space: gym.Space, capacity: int
 ) -> Union[np.ndarray, DatasetDict]:
-    if isinstance(obs_space, gym.spaces.Box):
+    if isinstance(obs_space, gymnasium.spaces.Box):
         return np.empty((capacity, *obs_space.shape), dtype=obs_space.dtype)
-    elif isinstance(obs_space, gym.spaces.Dict):
+    elif isinstance(obs_space, gymnasium.spaces.Dict):
         data_dict = {}
         for k, v in obs_space.spaces.items():
             data_dict[k] = _init_replay_dict(v, capacity)

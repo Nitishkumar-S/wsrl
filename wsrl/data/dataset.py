@@ -4,7 +4,7 @@ from typing import Dict, Iterable, Optional, Tuple, Union
 import jax
 import numpy as np
 from flax.core import frozen_dict
-from gym.utils import seeding
+from gymnasium.utils.seeding import np_random as gymnasium_np_random
 
 from wsrl.common.typing import Data
 
@@ -68,7 +68,7 @@ class Dataset(object):
         return self._np_random
 
     def seed(self, seed: Optional[int] = None) -> list:
-        self._np_random, seed = seeding.np_random(seed)
+        self._np_random, seed = gymnasium_np_random(seed)
         return [seed]
 
     def __len__(self) -> int:

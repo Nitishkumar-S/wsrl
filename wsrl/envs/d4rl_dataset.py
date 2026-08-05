@@ -1,7 +1,7 @@
 import collections
 from typing import Optional
 
-import d4rl
+#import d4rl
 import gym
 import gym.wrappers
 import numpy as np
